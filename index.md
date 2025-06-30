@@ -1,10 +1,8 @@
-# John Rush's Blog
-
 ![Elliott Bay Bike](images/ElliottBay.jpg)
 
 ## Latest Posts
 
-- [How I use AI in July 2025](posts/ai-20250701.md) - *July 1, 2025*
+- [How I use AI: July 2025](posts/ai-20250701.md) - *July 1, 2025*
 
 ## About
 
