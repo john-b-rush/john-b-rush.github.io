@@ -1,11 +1,14 @@
 ---
+# Override theme's dark mode with refined styling
 ---
 
-@import "{{ site.theme }}";
+@import "dark";
+@import "base";
+
+@include theme();
 
 /*
- * Refined Terminal Dark Mode
- * Keeps the console aesthetic but optimized for long-form reading
+ * Refined Terminal Dark Mode Overrides
  */
 
 :root {
@@ -21,25 +24,22 @@
   --refined-code-text: #c9d1d9;
 }
 
-/* Softer text rendering */
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background-color: var(--refined-bg);
-  color: var(--refined-text);
+  background-color: var(--refined-bg) !important;
+  color: var(--refined-text) !important;
 }
 
-/* Main content area */
 .container {
-  background-color: var(--refined-bg);
+  background-color: var(--refined-bg) !important;
 }
 
-/* Typography refinements */
 h1, h2, h3, h4, h5, h6 {
-  color: var(--refined-text);
+  color: var(--refined-text) !important;
   letter-spacing: -0.01em;
 }
 
@@ -49,43 +49,39 @@ h1 {
   margin-bottom: 1em;
 }
 
-/* Paragraphs - slightly muted for easier reading */
 p, li {
-  color: var(--refined-code-text);
+  color: var(--refined-code-text) !important;
   line-height: 1.7;
 }
 
-/* Links - muted cyan, terminal-inspired */
 a {
-  color: var(--refined-link);
+  color: var(--refined-link) !important;
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 0.15s ease;
 }
 
 a:hover {
-  color: var(--refined-link-hover);
+  color: var(--refined-link-hover) !important;
   border-bottom-color: var(--refined-link-hover);
 }
 
-/* Navigation/menu */
 .menu {
-  border-color: var(--refined-border);
+  border-color: var(--refined-border) !important;
 }
 
 .menu a {
-  color: var(--refined-text-muted);
+  color: var(--refined-text-muted) !important;
 }
 
 .menu a:hover,
 .menu a.active {
-  color: var(--refined-text);
+  color: var(--refined-text) !important;
 }
 
-/* Code blocks - elevated surface with subtle glow */
 pre, code {
-  background-color: var(--refined-bg-code);
-  color: var(--refined-code-text);
+  background-color: var(--refined-bg-code) !important;
+  color: var(--refined-code-text) !important;
   border: 1px solid var(--refined-border);
   border-radius: 6px;
 }
@@ -97,7 +93,6 @@ pre {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Inline code - subtle highlight */
 code {
   padding: 0.2em 0.4em;
   font-size: 0.9em;
@@ -108,33 +103,29 @@ pre code {
   padding: 0;
   border: none;
   box-shadow: none;
-  background: transparent;
+  background: transparent !important;
 }
 
-/* Blockquotes - accent bar */
 blockquote {
   border-left: 3px solid var(--refined-accent);
   padding-left: 1em;
   margin-left: 0;
-  color: var(--refined-text-muted);
+  color: var(--refined-text-muted) !important;
   font-style: italic;
 }
 
-/* Horizontal rules */
 hr {
   border: none;
   border-top: 1px solid var(--refined-border);
   margin: 2em 0;
 }
 
-/* Images - subtle frame */
 img {
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   margin: 1.5em 0;
 }
 
-/* Lists - better spacing */
 ul, ol {
   padding-left: 1.5em;
 }
@@ -143,27 +134,23 @@ li {
   margin-bottom: 0.5em;
 }
 
-/* Strong/bold - slightly brighter */
 strong, b {
-  color: var(--refined-text);
+  color: var(--refined-text) !important;
   font-weight: 600;
 }
 
-/* Footer area */
 footer {
-  color: var(--refined-text-muted);
+  color: var(--refined-text-muted) !important;
   border-top: 1px solid var(--refined-border);
   margin-top: 3em;
   padding-top: 1em;
 }
 
-/* Selection highlight */
 ::selection {
   background-color: rgba(88, 166, 255, 0.3);
   color: var(--refined-text);
 }
 
-/* Scrollbar styling (webkit) */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
