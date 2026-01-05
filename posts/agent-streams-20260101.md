@@ -1,6 +1,7 @@
 ---
 title: "Agent-Streams: Skeptical Overseer for Long-Running Coding Agents"
 description: "A builder/overseer loop for long-running coding agents: treat DONE as a claim, enforce skeptical review, and merge only after approval."
+image: "/images/posts/agent-streams-header.jpg"
 ---
 
 # Agent-Streams: Skeptical Overseer for Long-Running Coding Agents
@@ -12,7 +13,7 @@ description: "A builder/overseer loop for long-running coding agents: treat DONE
             (max-width: 600px) 400px,
             600px"
      src="../images/posts/agent-streams-header.jpg"
-     alt="AI Factory">
+     alt="Agent-Streams">
 
 Long-running coding agents are fantastic. I love giving them a big task, letting them run overnight, and coming back to merged code the next day.
 
