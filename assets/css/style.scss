@@ -21,185 +21,163 @@
   --refined-code-text: #c9d1d9;
 }
 
-/* Dark mode overrides - targets both OS preference and theme setting */
-@media (prefers-color-scheme: dark) {
-  body.dark, body {
-    background-color: var(--refined-bg);
-    color: var(--refined-text);
-  }
-
-  /* Softer text rendering */
-  html {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Main content area */
-  .container {
-    background-color: var(--refined-bg);
-  }
-
-  /* Typography refinements */
-  h1, h2, h3, h4, h5, h6 {
-    color: var(--refined-text);
-    letter-spacing: -0.01em;
-  }
-
-  h1 {
-    border-bottom: 1px solid var(--refined-border);
-    padding-bottom: 0.4em;
-    margin-bottom: 1em;
-  }
-
-  /* Paragraphs - slightly muted for easier reading */
-  p, li {
-    color: var(--refined-code-text);
-    line-height: 1.7;
-  }
-
-  /* Links - muted cyan, terminal-inspired */
-  a {
-    color: var(--refined-link);
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.15s ease;
-  }
-
-  a:hover {
-    color: var(--refined-link-hover);
-    border-bottom-color: var(--refined-link-hover);
-  }
-
-  /* Navigation/menu */
-  .menu {
-    border-color: var(--refined-border);
-  }
-
-  .menu a {
-    color: var(--refined-text-muted);
-  }
-
-  .menu a:hover,
-  .menu a.active {
-    color: var(--refined-text);
-  }
-
-  /* Code blocks - elevated surface with subtle glow */
-  pre, code {
-    background-color: var(--refined-bg-code);
-    color: var(--refined-code-text);
-    border: 1px solid var(--refined-border);
-    border-radius: 6px;
-  }
-
-  pre {
-    padding: 1em 1.2em;
-    margin: 1.5em 0;
-    overflow-x: auto;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  /* Inline code - subtle highlight */
-  code {
-    padding: 0.2em 0.4em;
-    font-size: 0.9em;
-    border-radius: 4px;
-  }
-
-  pre code {
-    padding: 0;
-    border: none;
-    box-shadow: none;
-    background: transparent;
-  }
-
-  /* Blockquotes - accent bar */
-  blockquote {
-    border-left: 3px solid var(--refined-accent);
-    padding-left: 1em;
-    margin-left: 0;
-    color: var(--refined-text-muted);
-    font-style: italic;
-  }
-
-  /* Horizontal rules */
-  hr {
-    border: none;
-    border-top: 1px solid var(--refined-border);
-    margin: 2em 0;
-  }
-
-  /* Images - subtle frame */
-  img {
-    border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    margin: 1.5em 0;
-  }
-
-  /* Lists - better spacing */
-  ul, ol {
-    padding-left: 1.5em;
-  }
-
-  li {
-    margin-bottom: 0.5em;
-  }
-
-  /* Strong/bold - slightly brighter */
-  strong, b {
-    color: var(--refined-text);
-    font-weight: 600;
-  }
-
-  /* Footer area */
-  footer {
-    color: var(--refined-text-muted);
-    border-top: 1px solid var(--refined-border);
-    margin-top: 3em;
-    padding-top: 1em;
-  }
-
-  /* Selection highlight */
-  ::selection {
-    background-color: rgba(88, 166, 255, 0.3);
-    color: var(--refined-text);
-  }
-
-  /* Scrollbar styling (webkit) */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: var(--refined-bg);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--refined-border);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--refined-text-muted);
-  }
+/* Softer text rendering */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Light mode - keep mostly stock but add subtle refinements */
-@media (prefers-color-scheme: light) {
-  pre, code {
-    border-radius: 6px;
-  }
+body {
+  background-color: var(--refined-bg);
+  color: var(--refined-text);
+}
 
-  pre {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  }
+/* Main content area */
+.container {
+  background-color: var(--refined-bg);
+}
 
-  img {
-    border-radius: 4px;
-  }
+/* Typography refinements */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--refined-text);
+  letter-spacing: -0.01em;
+}
 
-  p, li {
-    line-height: 1.7;
-  }
+h1 {
+  border-bottom: 1px solid var(--refined-border);
+  padding-bottom: 0.4em;
+  margin-bottom: 1em;
+}
+
+/* Paragraphs - slightly muted for easier reading */
+p, li {
+  color: var(--refined-code-text);
+  line-height: 1.7;
+}
+
+/* Links - muted cyan, terminal-inspired */
+a {
+  color: var(--refined-link);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+a:hover {
+  color: var(--refined-link-hover);
+  border-bottom-color: var(--refined-link-hover);
+}
+
+/* Navigation/menu */
+.menu {
+  border-color: var(--refined-border);
+}
+
+.menu a {
+  color: var(--refined-text-muted);
+}
+
+.menu a:hover,
+.menu a.active {
+  color: var(--refined-text);
+}
+
+/* Code blocks - elevated surface with subtle glow */
+pre, code {
+  background-color: var(--refined-bg-code);
+  color: var(--refined-code-text);
+  border: 1px solid var(--refined-border);
+  border-radius: 6px;
+}
+
+pre {
+  padding: 1em 1.2em;
+  margin: 1.5em 0;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Inline code - subtle highlight */
+code {
+  padding: 0.2em 0.4em;
+  font-size: 0.9em;
+  border-radius: 4px;
+}
+
+pre code {
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* Blockquotes - accent bar */
+blockquote {
+  border-left: 3px solid var(--refined-accent);
+  padding-left: 1em;
+  margin-left: 0;
+  color: var(--refined-text-muted);
+  font-style: italic;
+}
+
+/* Horizontal rules */
+hr {
+  border: none;
+  border-top: 1px solid var(--refined-border);
+  margin: 2em 0;
+}
+
+/* Images - subtle frame */
+img {
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  margin: 1.5em 0;
+}
+
+/* Lists - better spacing */
+ul, ol {
+  padding-left: 1.5em;
+}
+
+li {
+  margin-bottom: 0.5em;
+}
+
+/* Strong/bold - slightly brighter */
+strong, b {
+  color: var(--refined-text);
+  font-weight: 600;
+}
+
+/* Footer area */
+footer {
+  color: var(--refined-text-muted);
+  border-top: 1px solid var(--refined-border);
+  margin-top: 3em;
+  padding-top: 1em;
+}
+
+/* Selection highlight */
+::selection {
+  background-color: rgba(88, 166, 255, 0.3);
+  color: var(--refined-text);
+}
+
+/* Scrollbar styling (webkit) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--refined-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--refined-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--refined-text-muted);
 }

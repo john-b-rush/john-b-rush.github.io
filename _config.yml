@@ -5,8 +5,8 @@ url: "https://john-rush.com"
 header_pages:
   - index.md
   - about.md
-style: light
-listen_for_clients_preferred_style: true
+style: dark
+listen_for_clients_preferred_style: false
 
 plugins:
   - jekyll-seo-tag
