@@ -1,9 +1,9 @@
 ---
-title: "Agent-Streams: Skeptical Overseer Long-Running AI Agent Workflow"
-description: "A builder/overseer workflow for long-running coding agents: treat DONE as a claim, enforce skeptical review, and merge only after approval."
+title: "Agent-Streams: Skeptical Overseer for Long-Running Coding Agents"
+description: "A builder/overseer loop for long-running coding agents: treat DONE as a claim, enforce skeptical review, and merge only after approval."
 ---
 
-# Agent-Streams: Skeptical Overseer Long-Running AI Agent Workflow
+# Agent-Streams: Skeptical Overseer for Long-Running Coding Agents
 
 <img srcset="../images/posts/agent-streams-header-300w.jpg 300w,
              ../images/posts/agent-streams-header-400w.jpg 400w,

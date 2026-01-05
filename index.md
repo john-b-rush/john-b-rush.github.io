@@ -13,7 +13,7 @@ title: home
 
 ## Latest Posts
 
-- [Agent-Streams: Skeptical Overseer Long-Running AI Agent Workflow](posts/agent-streams-20260101.md) - *January 1, 2026*
+- [Agent-Streams: Skeptical Overseer for Long-Running Coding Agents](posts/agent-streams-20260101.md) - *January 1, 2026*
 - [Building a Personal AI Factory (July 2025 snapshot)](posts/ai-20250701.md) - *July 1, 2025*
 
 ## About
