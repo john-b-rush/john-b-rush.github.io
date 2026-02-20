@@ -13,6 +13,7 @@ title: home
 
 ## Latest Posts
 
+- [Codex, Claude and 25 Years of Eggs](posts/eggs-25-years-20260219) - *February 19, 2026*
 - [Compounding Beats Roadmaps](posts/compounding-beats-roadmaps-20260131) - *January 31, 2026*
 - [Agent-Streams: Skeptical Overseer for Long-Running Coding Agents](posts/agent-streams-20260101) - *January 1, 2026*
 - [Building a Personal AI Factory (July 2025 snapshot)](posts/ai-20250701) - *July 1, 2025*

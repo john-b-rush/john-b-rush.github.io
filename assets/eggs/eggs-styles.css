@@ -1,0 +1,258 @@
+/* Egg Visualizations — Shared Styles */
+
+.egg-viz {
+  background: var(--refined-bg-elevated);
+  border: 1px solid var(--refined-border);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  padding: 1.5em;
+  margin: 2em 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.egg-viz-title {
+  color: var(--refined-text);
+  font-size: 0.85em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 1em 0;
+}
+
+/* Toggle Buttons */
+.egg-toggles {
+  display: flex;
+  gap: 0.5em;
+  margin-bottom: 1em;
+  flex-wrap: wrap;
+}
+
+.egg-toggle {
+  background: var(--refined-bg);
+  color: var(--refined-text-muted);
+  border: 1px solid var(--refined-border);
+  border-radius: 999px;
+  padding: 0.3em 0.9em;
+  font-size: 0.78em;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.4;
+}
+
+.egg-toggle:hover {
+  color: var(--refined-text);
+  border-color: var(--refined-text-muted);
+}
+
+.egg-toggle.active {
+  background: var(--refined-accent);
+  color: #0f1419;
+  border-color: var(--refined-accent);
+  font-weight: 600;
+}
+
+/* Tooltip */
+.egg-tooltip {
+  position: absolute;
+  background: var(--refined-bg);
+  border: 1px solid var(--refined-border);
+  border-radius: 6px;
+  padding: 0.5em 0.75em;
+  font-size: 0.78em;
+  color: var(--refined-text);
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  line-height: 1.5;
+}
+
+.egg-tooltip.visible {
+  opacity: 1;
+}
+
+.egg-tooltip-label {
+  color: var(--refined-text-muted);
+  font-size: 0.9em;
+}
+
+.egg-tooltip-value {
+  color: var(--refined-text);
+  font-weight: 600;
+}
+
+/* Canvas container */
+.egg-canvas-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.egg-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+}
+
+/* Counter */
+.egg-counter-number {
+  font-size: clamp(2.5em, 8vw, 5em);
+  font-weight: 700;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  color: var(--refined-text);
+  text-align: center;
+  line-height: 1.2;
+  padding: 0.3em 0;
+  letter-spacing: -0.02em;
+}
+
+.egg-counter-sub {
+  color: var(--refined-text-muted);
+  text-align: center;
+  font-size: 0.95em;
+  margin-top: 0.2em;
+}
+
+/* Map Controls */
+.egg-map-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  margin-top: 1em;
+  flex-wrap: wrap;
+}
+
+.egg-map-btn {
+  background: var(--refined-bg);
+  color: var(--refined-text-muted);
+  border: 1px solid var(--refined-border);
+  border-radius: 6px;
+  width: 2.2em;
+  height: 2.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.85em;
+  flex-shrink: 0;
+}
+
+.egg-map-btn:hover {
+  color: var(--refined-text);
+  border-color: var(--refined-text-muted);
+}
+
+.egg-map-btn.active {
+  color: var(--refined-accent);
+  border-color: var(--refined-accent);
+}
+
+.egg-map-slider {
+  flex: 1;
+  min-width: 100px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--refined-border);
+  border-radius: 2px;
+  outline: none;
+}
+
+.egg-map-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--refined-accent);
+  cursor: pointer;
+  border: 2px solid var(--refined-bg-elevated);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+.egg-map-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--refined-accent);
+  cursor: pointer;
+  border: 2px solid var(--refined-bg-elevated);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+.egg-map-date {
+  color: var(--refined-text);
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 0.8em;
+  min-width: 5.5em;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.egg-map-speed {
+  color: var(--refined-text-muted);
+  font-size: 0.75em;
+  cursor: pointer;
+  border: 1px solid var(--refined-border);
+  border-radius: 4px;
+  padding: 0.15em 0.5em;
+  background: var(--refined-bg);
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.egg-map-speed:hover {
+  color: var(--refined-text);
+}
+
+/* Map SVG */
+.egg-map-svg {
+  width: 100%;
+  display: block;
+  border-radius: 4px;
+  background: var(--refined-bg);
+}
+
+/* Heatmap */
+.egg-heatmap-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.egg-heatmap-wrap svg {
+  display: block;
+  min-width: 700px;
+}
+
+/* Marker transitions */
+.egg-map-svg circle {
+  transition: opacity 0.2s ease, fill 0.3s ease, r 0.15s ease;
+}
+
+/* City labels + store name fade */
+.egg-map-svg text {
+  transition: opacity 0.4s ease;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .egg-viz {
+    padding: 1em;
+    margin: 1.5em 0;
+  }
+
+  .egg-toggles {
+    gap: 0.35em;
+  }
+
+  .egg-toggle {
+    font-size: 0.72em;
+    padding: 0.25em 0.7em;
+  }
+
+  .egg-map-controls {
+    gap: 0.5em;
+  }
+}
