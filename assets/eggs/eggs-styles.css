@@ -97,6 +97,17 @@
 }
 
 /* Counter */
+.egg-counter-row {
+  display: flex;
+  gap: 2em;
+  justify-content: center;
+}
+
+.egg-counter-col {
+  flex: 1;
+  min-width: 0;
+}
+
 .egg-counter-number {
   font-size: clamp(2.5em, 8vw, 5em);
   font-weight: 700;

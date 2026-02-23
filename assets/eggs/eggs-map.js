@@ -97,7 +97,7 @@
     if (d.lat < 25) return "Hawaii";
     if (d.lat < 32 && d.lng > -95) return "Louisiana";
     if (d.lat > 31 && d.lat < 36 && d.lng > -114 && d.lng < -109) return "Arizona";
-    if (d.lat > 39 && d.lat < 42 && d.lng > -113 && d.lng < -109) return "Utah";
+    if (d.lat > 36 && d.lat < 42 && d.lng > -114 && d.lng < -109) return "Utah";
     return "California";
   }
 
@@ -359,25 +359,9 @@
   flightPath.setAttribute("stroke-linecap", "round");
   svgEl.appendChild(flightPath);
 
-  // --- City labels — hidden until first purchase ---
+  // --- City labels — created later (after markers group for z-order) ---
   var cityLabelEls = {};
   var cityKeys = ["moscow", "portland", "seattle"];
-  for (var c = 0; c < cityKeys.length; c++) {
-    var city = cities[cityKeys[c]];
-    var cx = projX(city.lng);
-    var cy = projY(city.lat);
-
-    var lbl = document.createElementNS(ns, "text");
-    lbl.setAttribute("x", cx + 5);
-    lbl.setAttribute("y", cy - 6);
-    lbl.setAttribute("font-size", "10");
-    lbl.setAttribute("fill", "#8b949e");
-    lbl.setAttribute("font-family", "-apple-system, BlinkMacSystemFont, sans-serif");
-    lbl.setAttribute("opacity", "0");
-    lbl.textContent = city.label;
-    svgEl.appendChild(lbl);
-    cityLabelEls[cityKeys[c]] = lbl;
-  }
 
   // --- Year overlay ---
   var yearOverlay = document.createElementNS(ns, "text");
@@ -427,6 +411,24 @@
   var markersGroup = document.createElementNS(ns, "g");
   svgEl.appendChild(markersGroup);
 
+  // --- City labels — rendered after markers so they stay on top ---
+  for (var c = 0; c < cityKeys.length; c++) {
+    var city = cities[cityKeys[c]];
+    var cx = projX(city.lng);
+    var cy = projY(city.lat);
+
+    var lbl = document.createElementNS(ns, "text");
+    lbl.setAttribute("x", cx + 5);
+    lbl.setAttribute("y", cy - 6);
+    lbl.setAttribute("font-size", "10");
+    lbl.setAttribute("fill", "#8b949e");
+    lbl.setAttribute("font-family", "-apple-system, BlinkMacSystemFont, sans-serif");
+    lbl.setAttribute("opacity", "0");
+    lbl.textContent = city.label;
+    svgEl.appendChild(lbl);
+    cityLabelEls[cityKeys[c]] = lbl;
+  }
+
   var mapTooltip = document.createElement("div");
   mapTooltip.className = "egg-tooltip";
 
@@ -442,6 +444,11 @@
   svgWrap.appendChild(svgEl);
   svgWrap.appendChild(mapTooltip);
   svgWrap.appendChild(playOverlay);
+  var title = document.createElement("div");
+  title.className = "egg-viz-title";
+  title.textContent = "Egg Purchases";
+  container.appendChild(title);
+
   container.appendChild(svgWrap);
 
   // --- Controls ---
@@ -568,7 +575,7 @@
   function updateYearPosition() {
     yearOverlay.setAttribute("x", (currentVB.x + currentVB.w - currentVB.w * 0.03).toFixed(1));
     yearOverlay.setAttribute("y", (currentVB.y + currentVB.w * 0.08).toFixed(1));
-    yearOverlay.setAttribute("font-size", Math.round(currentVB.w * 0.07));
+    yearOverlay.setAttribute("font-size", (currentVB.w * 0.07).toFixed(2));
   }
 
   setViewBox(currentVB);

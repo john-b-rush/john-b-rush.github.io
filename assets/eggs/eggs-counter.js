@@ -1,26 +1,48 @@
-// Viz 3: Cumulative Egg Counter — scroll-triggered animated count-up, click to replay
+// Viz 3: Cumulative Egg Counter + Total Spend — scroll-triggered animated count-up, click to replay
 (function () {
   var container = document.getElementById("egg-counter");
   if (!container || !window.EGG_DATA) return;
 
-  var total = 0;
+  var totalEggs = 0;
+  var totalSpend = 0;
   for (var i = 0; i < window.EGG_DATA.length; i++) {
-    total += window.EGG_DATA[i].qty;
+    totalEggs += window.EGG_DATA[i].qty;
+    totalSpend += window.EGG_DATA[i].price;
   }
 
   container.classList.add("egg-viz");
   container.style.cursor = "pointer";
 
-  var numEl = document.createElement("div");
-  numEl.className = "egg-counter-number";
-  numEl.textContent = "0";
+  var row = document.createElement("div");
+  row.className = "egg-counter-row";
 
-  var subEl = document.createElement("div");
-  subEl.className = "egg-counter-sub";
-  subEl.textContent = "eggs purchased since 2001";
+  // Eggs column
+  var eggsCol = document.createElement("div");
+  eggsCol.className = "egg-counter-col";
+  var eggsNum = document.createElement("div");
+  eggsNum.className = "egg-counter-number";
+  eggsNum.textContent = "0";
+  var eggsSub = document.createElement("div");
+  eggsSub.className = "egg-counter-sub";
+  eggsSub.textContent = "eggs purchased since 2001";
+  eggsCol.appendChild(eggsNum);
+  eggsCol.appendChild(eggsSub);
 
-  container.appendChild(numEl);
-  container.appendChild(subEl);
+  // Spend column
+  var spendCol = document.createElement("div");
+  spendCol.className = "egg-counter-col";
+  var spendNum = document.createElement("div");
+  spendNum.className = "egg-counter-number";
+  spendNum.textContent = "$0";
+  var spendSub = document.createElement("div");
+  spendSub.className = "egg-counter-sub";
+  spendSub.textContent = "total spent on eggs";
+  spendCol.appendChild(spendNum);
+  spendCol.appendChild(spendSub);
+
+  row.appendChild(eggsCol);
+  row.appendChild(spendCol);
+  container.appendChild(row);
 
   function formatNumber(n) {
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -34,7 +56,8 @@
 
   function animateCount() {
     running = true;
-    numEl.textContent = "0";
+    eggsNum.textContent = "0";
+    spendNum.textContent = "$0";
 
     var duration = 2500;
     var start = performance.now();
@@ -43,8 +66,8 @@
       var elapsed = now - start;
       var progress = Math.min(elapsed / duration, 1);
       var eased = easeOutQuart(progress);
-      var current = Math.round(eased * total);
-      numEl.textContent = formatNumber(current);
+      eggsNum.textContent = formatNumber(Math.round(eased * totalEggs));
+      spendNum.textContent = "$" + formatNumber(Math.round(eased * totalSpend));
 
       if (progress < 1) {
         requestAnimationFrame(tick);
