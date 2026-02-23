@@ -8,6 +8,17 @@ header_pages:
 style: dark
 listen_for_clients_preferred_style: false
 
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+  - scope:
+      path: "posts"
+    values:
+      layout: "post"
+
 plugins:
+  - jekyll-remote-theme
   - jekyll-seo-tag
 
