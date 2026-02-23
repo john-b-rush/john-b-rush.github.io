@@ -23,11 +23,11 @@
     perDozen.push((y.spend / y.eggs) * 12);
   }
 
-  // Index to first year = 100
+  // Cumulative % change from first year
   var basePrice = perDozen[0];
-  var indexed = [];
+  var cumPct = [];
   for (var i = 0; i < perDozen.length; i++) {
-    indexed.push((perDozen[i] / basePrice) * 100);
+    cumPct.push(((perDozen[i] - basePrice) / basePrice) * 100);
   }
 
   // Year-over-year % change
@@ -45,10 +45,10 @@
   toggles.className = "egg-toggles";
 
   var modes = [
-    { id: "index", label: "Price Index" },
+    { id: "cumulative", label: "% Change" },
     { id: "yoy", label: "Year-over-Year %" },
   ];
-  var currentMode = "index";
+  var currentMode = "cumulative";
 
   modes.forEach(function (m) {
     var btn = document.createElement("button");
@@ -108,7 +108,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
 
-    var values = currentMode === "index" ? indexed : yoyChange;
+    var values = currentMode === "cumulative" ? cumPct : yoyChange;
     var isBar = currentMode === "yoy";
 
     var minVal = Infinity, maxVal = -Infinity;
@@ -159,7 +159,7 @@
       if (isBar) {
         label = (gv >= 0 ? "+" : "") + Math.round(gv) + "%";
       } else {
-        label = Math.round(gv);
+        label = (gv >= 0 ? "+" : "") + Math.round(gv) + "%";
       }
       ctx.fillText(label, padLeft - 8, gy);
     }
@@ -190,21 +190,16 @@
       ctx.fillText(yrLabel, xx, padTop + plotH + 8);
     }
 
-    // Index baseline reference
+    // Baseline at 0% for cumulative view
     if (!isBar) {
       ctx.strokeStyle = "#8b949e";
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 4]);
       ctx.beginPath();
-      ctx.moveTo(padLeft, yPos(100));
-      ctx.lineTo(padLeft + plotW, yPos(100));
+      ctx.moveTo(padLeft, yPos(0));
+      ctx.lineTo(padLeft + plotW, yPos(0));
       ctx.stroke();
       ctx.setLineDash([]);
-
-      ctx.fillStyle = "#8b949e";
-      ctx.textAlign = "left";
-      ctx.textBaseline = "bottom";
-      ctx.fillText(years[0] + " baseline", padLeft + 4, yPos(100) - 3);
       ctx.strokeStyle = "#30363d";
       ctx.lineWidth = 0.5;
     }
@@ -289,7 +284,7 @@
     if (chart.isBar) {
       valStr = (val >= 0 ? "+" : "") + val.toFixed(1) + "% vs " + (yr - 1);
     } else {
-      valStr = Math.round(val) + " (was 100 in " + years[0] + ")";
+      valStr = (val >= 0 ? "+" : "") + Math.round(val) + "% vs " + years[0];
     }
 
     tooltip.innerHTML =

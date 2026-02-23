@@ -207,12 +207,57 @@
   color: var(--refined-text);
 }
 
+/* Map SVG wrapper */
+.egg-map-wrap {
+  position: relative;
+}
+
 /* Map SVG */
 .egg-map-svg {
   width: 100%;
   display: block;
   border-radius: 4px;
   background: var(--refined-bg);
+  cursor: pointer;
+}
+
+/* Big play overlay */
+.egg-map-play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  background: rgba(10, 14, 20, 0.4);
+  transition: opacity 0.4s ease;
+  pointer-events: auto;
+}
+
+.egg-map-play-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.egg-map-play-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(21, 27, 35, 0.85);
+  border: 2px solid rgba(230, 237, 243, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.egg-map-play-overlay:hover .egg-map-play-circle {
+  transform: scale(1.08);
+  border-color: rgba(230, 237, 243, 0.5);
 }
 
 /* Heatmap */

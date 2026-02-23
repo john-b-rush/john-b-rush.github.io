@@ -425,8 +425,19 @@
   var mapTooltip = document.createElement("div");
   mapTooltip.className = "egg-tooltip";
 
-  container.appendChild(svgEl);
-  container.appendChild(mapTooltip);
+  // --- SVG wrapper (for overlay positioning) ---
+  var svgWrap = document.createElement("div");
+  svgWrap.className = "egg-map-wrap";
+
+  // --- Big play overlay ---
+  var playOverlay = document.createElement("div");
+  playOverlay.className = "egg-map-play-overlay";
+  playOverlay.innerHTML = '<div class="egg-map-play-circle"><svg viewBox="0 0 24 24" width="48" height="48"><polygon points="8,5 20,12 8,19" fill="#e6edf3"/></svg></div>';
+
+  svgWrap.appendChild(svgEl);
+  svgWrap.appendChild(mapTooltip);
+  svgWrap.appendChild(playOverlay);
+  container.appendChild(svgWrap);
 
   // --- Controls ---
   var controls = document.createElement("div");
@@ -844,7 +855,7 @@
       '<span class="egg-tooltip-label">' + d.date + " &middot; " + d.store + "</span><br>" +
       '<span class="egg-tooltip-value">' + d.qty + " eggs &middot; $" + d.price.toFixed(2) + "</span>";
 
-    var rect = container.getBoundingClientRect();
+    var rect = svgWrap.getBoundingClientRect();
     var tx = e.clientX - rect.left + 14;
     var ty = e.clientY - rect.top - 30;
     if (tx + mapTooltip.offsetWidth > rect.width - 10) tx = e.clientX - rect.left - mapTooltip.offsetWidth - 14;
@@ -906,10 +917,17 @@
     requestAnimationFrame(playLoop);
   }
 
-  // --- Controls ---
-  playBtn.addEventListener("click", function () {
+  // --- Play/Pause toggle ---
+  var hasStarted = false;
+
+  function togglePlay() {
     playing = !playing;
     if (playing) {
+      // Hide overlay on first play
+      if (!hasStarted) {
+        hasStarted = true;
+        playOverlay.classList.add("hidden");
+      }
       playBtn.innerHTML = "&#9646;&#9646;";
       playBtn.classList.add("active");
       if (currentIdx >= data.length - 1) {
@@ -923,6 +941,9 @@
         // Reset detour state
         detourState = "normal";
         hideDetourVisuals();
+        // Show overlay again for replay
+        hasStarted = true;
+        playOverlay.classList.add("hidden");
       }
       lastFrameTime = 0;
       requestAnimationFrame(playLoop);
@@ -930,6 +951,19 @@
       playBtn.innerHTML = "&#9654;";
       playBtn.classList.remove("active");
     }
+  }
+
+  playBtn.addEventListener("click", togglePlay);
+
+  // Big overlay click starts playback
+  playOverlay.addEventListener("click", function () {
+    if (!playing) togglePlay();
+  });
+
+  // Click SVG to toggle play/pause (but not on data points)
+  svgEl.addEventListener("click", function (e) {
+    if (e.target.tagName === "circle" && e.target.hasAttribute("data-idx")) return;
+    togglePlay();
   });
 
   slider.addEventListener("input", function () {

@@ -11,7 +11,7 @@
   // --- Build UI ---
   var title = document.createElement("div");
   title.className = "egg-viz-title";
-  title.textContent = "Egg Prices Over Time";
+  title.textContent = "Egg Prices";
 
   var toggles = document.createElement("div");
   toggles.className = "egg-toggles";
@@ -78,10 +78,12 @@
         values.push(data[i].price / data[i].qty);
       }
     } else if (currentMode === "adjusted") {
+      var baseYear = 2026;
+      var baseCpi = cpi[baseYear] || 325;
       for (var i = 0; i < data.length; i++) {
         var year = parseInt(data[i].date.slice(0, 4));
-        var mult = cpi[year] || 1;
-        values.push(data[i].price / data[i].qty / mult);
+        var mult = cpi[year] || baseCpi;
+        values.push(data[i].price / data[i].qty * (baseCpi / mult));
       }
     } else {
       // cumulative total
@@ -260,6 +262,8 @@
     var valStr;
     if (currentMode === "total") {
       valStr = "$" + val.toFixed(2);
+    } else if (currentMode === "adjusted") {
+      valStr = "$" + val.toFixed(3) + "/egg (2026$)";
     } else {
       valStr = "$" + val.toFixed(3) + "/egg";
     }
