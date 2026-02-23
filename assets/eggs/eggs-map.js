@@ -82,10 +82,15 @@
     })(),
   };
 
-  // --- Travel detection ---
+  // --- Travel detection (anything far from Moscow/Portland/Seattle) ---
   function isTravel(d) {
-    var x = projX(d.lng), y = projY(d.lat);
-    return x < -100 || x > mapW + 100 || y < -100 || y > mapH + 100;
+    var refs = [[46.73, -117.00], [45.52, -122.68], [47.61, -122.33]];
+    var minDist = Infinity;
+    for (var i = 0; i < refs.length; i++) {
+      var dist = Math.abs(d.lat - refs[i][0]) + Math.abs(d.lng - refs[i][1]);
+      if (dist < minDist) minDist = dist;
+    }
+    return minDist > 5;
   }
 
   function travelRegion(d) {
@@ -578,7 +583,7 @@
   var detourInfo = null;
 
   var DETOUR_OUT_MS = 1200;
-  var DETOUR_HOLD_MS = 1800;
+  var DETOUR_HOLD_MS = 1000;
   var DETOUR_BACK_MS = 1000;
 
   function calcDetourVB(dx, dy) {

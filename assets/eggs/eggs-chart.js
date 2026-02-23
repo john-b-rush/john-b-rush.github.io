@@ -190,32 +190,83 @@
       }
     }
 
-    // Area fill under line
-    ctx.beginPath();
-    ctx.moveTo(xPos(timestamps[0]), yPos(values[0]));
-    for (var i = 1; i < values.length; i++) {
-      ctx.lineTo(xPos(timestamps[i]), yPos(values[i]));
+    // Build screen-space points
+    var pts = [];
+    for (var i = 0; i < values.length; i++) {
+      pts.push({ x: xPos(timestamps[i]), y: yPos(values[i]) });
     }
-    ctx.lineTo(xPos(timestamps[values.length - 1]), padTop + plotH);
-    ctx.lineTo(xPos(timestamps[0]), padTop + plotH);
-    ctx.closePath();
 
+    // Moving average trend line
+    var windowSize = Math.max(15, Math.round(values.length / 20));
+    var trendPts = [];
+    for (var i = 0; i < values.length; i++) {
+      var start = Math.max(0, i - Math.floor(windowSize / 2));
+      var end = Math.min(values.length, i + Math.ceil(windowSize / 2));
+      var sum = 0;
+      for (var j = start; j < end; j++) sum += values[j];
+      trendPts.push({ x: xPos(timestamps[i]), y: yPos(sum / (end - start)) });
+    }
+
+    // Monotone cubic Hermite spline
+    function drawSmooth(points) {
+      if (points.length < 2) return;
+      ctx.moveTo(points[0].x, points[0].y);
+      if (points.length === 2) { ctx.lineTo(points[1].x, points[1].y); return; }
+      var n = points.length;
+      var dx = [], dy = [], m = [], d = [];
+      for (var i = 0; i < n - 1; i++) {
+        dx[i] = points[i + 1].x - points[i].x;
+        dy[i] = points[i + 1].y - points[i].y;
+        d[i] = dy[i] / dx[i];
+      }
+      m[0] = d[0];
+      for (var i = 1; i < n - 1; i++) {
+        m[i] = (d[i - 1] * d[i] <= 0) ? 0 : (d[i - 1] + d[i]) / 2;
+      }
+      m[n - 1] = d[n - 2];
+      for (var i = 0; i < n - 1; i++) {
+        if (Math.abs(d[i]) < 1e-6) { m[i] = 0; m[i + 1] = 0; continue; }
+        var a = m[i] / d[i], b = m[i + 1] / d[i];
+        var s = a * a + b * b;
+        if (s > 9) { var t = 3 / Math.sqrt(s); m[i] = t * a * d[i]; m[i + 1] = t * b * d[i]; }
+      }
+      for (var i = 0; i < n - 1; i++) {
+        var third = dx[i] / 3;
+        ctx.bezierCurveTo(
+          points[i].x + third, points[i].y + m[i] * third,
+          points[i + 1].x - third, points[i + 1].y - m[i + 1] * third,
+          points[i + 1].x, points[i + 1].y
+        );
+      }
+    }
+
+    // Subtle area fill under trend line
+    ctx.beginPath();
+    drawSmooth(trendPts);
+    ctx.lineTo(trendPts[trendPts.length - 1].x, padTop + plotH);
+    ctx.lineTo(trendPts[0].x, padTop + plotH);
+    ctx.closePath();
     var grad = ctx.createLinearGradient(0, padTop, 0, padTop + plotH);
-    grad.addColorStop(0, "rgba(88, 166, 255, 0.15)");
+    grad.addColorStop(0, "rgba(88, 166, 255, 0.08)");
     grad.addColorStop(1, "rgba(88, 166, 255, 0)");
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // Line
+    // Trend line
     ctx.beginPath();
-    ctx.moveTo(xPos(timestamps[0]), yPos(values[0]));
-    for (var i = 1; i < values.length; i++) {
-      ctx.lineTo(xPos(timestamps[i]), yPos(values[i]));
-    }
-    ctx.strokeStyle = "#58a6ff";
-    ctx.lineWidth = 1.8;
+    drawSmooth(trendPts);
+    ctx.strokeStyle = "rgba(88, 166, 255, 0.35)";
+    ctx.lineWidth = 2;
     ctx.lineJoin = "round";
     ctx.stroke();
+
+    // Dots
+    for (var i = 0; i < pts.length; i++) {
+      ctx.beginPath();
+      ctx.arc(pts[i].x, pts[i].y, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(88, 166, 255, 0.55)";
+      ctx.fill();
+    }
 
     // Store data for hover
     canvas._eggChart = {
