@@ -236,6 +236,7 @@
   transition: opacity 0.4s ease;
 }
 
+
 /* Responsive */
 @media (max-width: 600px) {
   .egg-viz {
