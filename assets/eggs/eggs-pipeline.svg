@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" style="max-width:100%;height:auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-auto">
+      <path d="M 0 0 L 10 3.5 L 0 7 z" fill="#8b949e"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="520" rx="8" fill="#151b23"/>
+
+  <!-- Title -->
+  <text x="360" y="28" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="600">Receipt Processing Pipeline</text>
+
+  <!-- ===== ROW 1: INPUTS ===== -->
+  <rect x="15" y="48" width="155" height="44" rx="4" fill="#1c2128" stroke="#30363d"/>
+  <text x="92" y="66" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">Flatbed Scans</text>
+  <text x="92" y="80" text-anchor="middle" fill="#8b949e" font-size="9">622 multi-receipt pages</text>
+
+  <rect x="185" y="48" width="155" height="44" rx="4" fill="#1c2128" stroke="#30363d"/>
+  <text x="262" y="66" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">Images</text>
+  <text x="262" y="80" text-anchor="middle" fill="#8b949e" font-size="9">549 ScanSnap + photos</text>
+
+  <rect x="355" y="48" width="155" height="44" rx="4" fill="#1c2128" stroke="#30363d"/>
+  <text x="432" y="66" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">PDF Receipts</text>
+  <text x="432" y="80" text-anchor="middle" fill="#8b949e" font-size="9">6,531 files</text>
+
+  <rect x="525" y="48" width="180" height="44" rx="4" fill="#1c2128" stroke="#30363d"/>
+  <text x="615" y="66" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">Email Receipts</text>
+  <text x="615" y="80" text-anchor="middle" fill="#8b949e" font-size="9">1,965 .eml files</text>
+
+  <!-- ===== Arrows from inputs down ===== -->
+  <line x1="92" y1="92" x2="92" y2="118" stroke="#8b949e" marker-end="url(#arrow)"/>
+  <line x1="262" y1="92" x2="262" y2="168" stroke="#8b949e" marker-end="url(#arrow)"/>
+  <line x1="432" y1="92" x2="432" y2="168" stroke="#8b949e" marker-end="url(#arrow)"/>
+  <line x1="615" y1="92" x2="615" y2="168" stroke="#8b949e" marker-end="url(#arrow)"/>
+
+  <!-- ===== ROW 2: SCANNER PIPELINE (left side only) ===== -->
+  <rect x="15" y="120" width="155" height="44" rx="4" fill="#0e4429" stroke="#26a641"/>
+  <text x="92" y="138" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">SAM3 Detection</text>
+  <text x="92" y="152" text-anchor="middle" fill="#8b949e" font-size="9">→ 1,873 individual receipts</text>
+
+  <line x1="92" y1="164" x2="92" y2="168" stroke="#8b949e" marker-end="url(#arrow)"/>
+
+  <!-- ===== ROW 3: ALL CONVERGE ===== -->
+  <rect x="15" y="180" width="690" height="44" rx="4" fill="#1c2128" stroke="#58a6ff" stroke-dasharray="4,2"/>
+  <text x="360" y="198" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">All Individual Receipts</text>
+  <text x="360" y="212" text-anchor="middle" fill="#8b949e" font-size="9">10,925 images + documents, 2002–2026</text>
+
+  <!-- Arrow down -->
+  <line x1="360" y1="224" x2="360" y2="248" stroke="#8b949e" marker-end="url(#arrow)"/>
+
+  <!-- ===== ROW 4: TEXT EXTRACTION ===== -->
+  <rect x="100" y="250" width="520" height="44" rx="4" fill="#0e4429" stroke="#26a641"/>
+  <text x="360" y="268" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">Text Extraction</text>
+  <text x="360" y="282" text-anchor="middle" fill="#8b949e" font-size="9">Tesseract OCR · macOS Vision · email MIME parsing · PDF text</text>
+
+  <!-- Arrow down -->
+  <line x1="360" y1="294" x2="360" y2="318" stroke="#8b949e" marker-end="url(#arrow)"/>
+
+  <!-- ===== ROW 5: SEMANTIC ENRICHMENT (parallel) ===== -->
+  <rect x="40" y="320" width="640" height="60" rx="4" fill="none" stroke="#30363d" stroke-dasharray="4,2"/>
+  <text x="680" y="336" text-anchor="end" fill="#58a6ff" font-size="9">6–12 parallel shards</text>
+
+  <!-- Individual shard boxes -->
+  <rect x="55" y="332" width="80" height="36" rx="3" fill="#0e4429" stroke="#26a641"/>
+  <text x="95" y="354" text-anchor="middle" fill="#e6edf3" font-size="8">Shard 0</text>
+  <rect x="143" y="332" width="80" height="36" rx="3" fill="#0e4429" stroke="#26a641"/>
+  <text x="183" y="354" text-anchor="middle" fill="#e6edf3" font-size="8">Shard 1</text>
+  <rect x="231" y="332" width="80" height="36" rx="3" fill="#0e4429" stroke="#26a641"/>
+  <text x="271" y="354" text-anchor="middle" fill="#e6edf3" font-size="8">Shard 2</text>
+  <rect x="319" y="332" width="80" height="36" rx="3" fill="#0e4429" stroke="#26a641"/>
+  <text x="359" y="354" text-anchor="middle" fill="#e6edf3" font-size="8">Shard 3</text>
+  <rect x="407" y="332" width="80" height="36" rx="3" fill="#0e4429" stroke="#26a641"/>
+  <text x="447" y="354" text-anchor="middle" fill="#e6edf3" font-size="8">Shard 4</text>
+  <rect x="495" y="332" width="80" height="36" rx="3" fill="#0e4429" stroke="#26a641"/>
+  <text x="535" y="354" text-anchor="middle" fill="#e6edf3" font-size="8">Shard 5</text>
+  <text x="593" y="354" text-anchor="middle" fill="#8b949e" font-size="10">…</text>
+
+  <!-- Label for this stage -->
+  <text x="360" y="326" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">Semantic Enrichment (Claude / Codex LLM)</text>
+
+  <!-- Arrow down -->
+  <line x1="360" y1="380" x2="360" y2="400" stroke="#8b949e" marker-end="url(#arrow)"/>
+
+  <!-- ===== ROW 6: EGG DETECTION ===== -->
+  <rect x="100" y="402" width="520" height="44" rx="4" fill="#0e4429" stroke="#26a641"/>
+  <text x="360" y="420" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">Egg Detection &amp; Pricing</text>
+  <text x="360" y="434" text-anchor="middle" fill="#8b949e" font-size="9">heuristic keywords → LLM text extraction → LLM vision fallback</text>
+
+  <!-- Arrow down -->
+  <line x1="360" y1="446" x2="360" y2="466" stroke="#8b949e" marker-end="url(#arrow)"/>
+
+  <!-- ===== ROW 7: OUTPUT ===== -->
+  <rect x="160" y="468" width="400" height="40" rx="4" fill="#1c2128" stroke="#58a6ff"/>
+  <text x="360" y="486" text-anchor="middle" fill="#e6edf3" font-size="10" font-weight="600">503 confirmed egg receipts</text>
+  <text x="360" y="500" text-anchor="middle" fill="#8b949e" font-size="9">100% with pricing · store · date · merchant</text>
+
+  <!-- ===== SIDE LABELS ===== -->
+  <!-- Human QA callouts -->
+  <rect x="614" y="120" width="86" height="28" rx="3" fill="#1c2128" stroke="#f0883e"/>
+  <text x="657" y="138" text-anchor="middle" fill="#f0883e" font-size="8" font-weight="600">Human QA</text>
+  <line x1="614" y1="134" x2="170" y2="142" stroke="#f0883e" stroke-dasharray="3,2" opacity="0.5"/>
+
+  <rect x="614" y="402" width="86" height="28" rx="3" fill="#1c2128" stroke="#f0883e"/>
+  <text x="657" y="420" text-anchor="middle" fill="#f0883e" font-size="8" font-weight="600">Human QA</text>
+  <line x1="614" y1="416" x2="620" y2="424" stroke="#f0883e" stroke-dasharray="3,2" opacity="0.5"/>
+
+  <!-- Two-phase label -->
+  <text x="15" y="410" fill="#8b949e" font-size="8">extract → apply</text>
+  <text x="15" y="422" fill="#8b949e" font-size="8">(durable checkpoint)</text>
+
+</svg>

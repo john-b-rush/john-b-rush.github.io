@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview: Codex, Claude and 25 Years of Eggs</title>
+<style>
+  :root {
+    --refined-bg: #0f1419;
+    --refined-bg-elevated: #151b23;
+    --refined-bg-code: #1c2128;
+    --refined-text: #e6edf3;
+    --refined-text-muted: #8b949e;
+    --refined-link: #58a6ff;
+    --refined-link-hover: #79c0ff;
+    --refined-accent: #3fb950;
+    --refined-border: #30363d;
+    --refined-code-text: #c9d1d9;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; }
+  body {
+    background: var(--refined-bg);
+    color: var(--refined-code-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.7;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2em 1.5em;
+  }
+  h1, h2, h3 { color: var(--refined-text); letter-spacing: -0.01em; }
+  h1 { border-bottom: 1px solid var(--refined-border); padding-bottom: 0.4em; }
+  h2 { margin-top: 2em; }
+  h3 { margin-top: 1.5em; }
+  a { color: var(--refined-link); text-decoration: none; }
+  a:hover { color: var(--refined-link-hover); text-decoration: underline; }
+  em { color: var(--refined-text-muted); }
+  p { margin: 1em 0; }
+  hr { border: none; border-top: 1px solid var(--refined-border); margin: 3em 0; }
+  code { background: var(--refined-bg-code); color: var(--refined-code-text); padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.9em; border: 1px solid var(--refined-border); }
+  strong { color: var(--refined-text); font-weight: 600; }
+  ol, ul { padding-left: 1.5em; }
+  li { margin-bottom: 0.5em; }
+  blockquote { border-left: 3px solid var(--refined-accent); padding-left: 1em; margin-left: 0; color: var(--refined-text-muted); font-style: italic; }
+  table { border-collapse: collapse; width: 100%; margin: 1.5em 0; font-size: 0.85em; }
+  th, td { border: 1px solid var(--refined-border); padding: 0.5em 0.75em; text-align: left; }
+  th { background: var(--refined-bg-code); color: var(--refined-text); font-weight: 600; }
+  td { color: var(--refined-code-text); }
+</style>
+<link rel="stylesheet" href="assets/eggs/eggs-styles.css">
+</head>
+<body>
+
+<h1>Codex, Claude and 25 Years of Eggs</h1>
+<p><em>Published: February 19, 2026</em></p>
+
+<p>Since 2001, I've kept my receipts. What started as a college budget spreadsheet became a hobby — some would say compulsion — of scanning and archiving every grocery receipt I could get my hands on. Twenty-five years, three cities, thousands of scans. The original bet was simple: computer vision would eventually be able to read all of these, and the data would be interesting. This month, I finally tested that bet with two AI coding agents and some foundational models. 503 egg receipts, $1,734 in total egg spend, and 7,328 eggs later — here's what I found.</p>
+
+<h2>25 Years of Egg Prices</h2>
+
+<p>Try "Inflation-Adjusted" — eggs were actually getting <em>cheaper</em> until the 2022 avian flu spike.</p>
+
+<div id="egg-price-chart"></div>
+
+<h2>Where I Bought Them</h2>
+
+<p>Moscow, Idaho to Portland to Seattle. Hit play.</p>
+
+<div id="egg-map"></div>
+
+<h2>The Running Total</h2>
+
+<p>Click to replay.</p>
+
+<div id="egg-counter"></div>
+
+<h2>Every Purchase, Every Week</h2>
+
+<p>Twenty-five years of near-weekly egg buying. The gaps are vacations.</p>
+
+<div id="egg-heatmap"></div>
+
+<hr>
+
+<h2>Why This Exists Now</h2>
+
+<p>When I started scanning receipts in college, the technology to actually <em>read</em> them didn't exist — not reliably, not at scale. But it was obvious that it would. So I kept scanning, kept archiving, and waited. The bet was that someday the extraction would be trivial, and the interesting part would be what the data actually says.</p>
+
+<p>We're not quite at "trivial" yet, but we crossed a threshold this year. What would have taken hundreds of hours of manual data entry — typing in prices, dates, store names from thousands of garbled receipt scans — took about a dozen evenings of pair programming with AI agents. I never typed a single price. I never manually entered a store name. The spreadsheet approach was never realistic for this volume. The AI approach finally was.</p>
+
+<p>Part of the exercise was genuinely testing where foundational models are strong and where they still fall short. I wanted to feel the difference between classical computer vision and modern segmentation models, between hand-tuned regex and LLM extraction, between heuristic pipelines and just throwing everything at a vision model. You can read about these tradeoffs. Until you run 5,000+ receipts through them, you don't really internalize them.</p>
+
+<p>My role was creative direction and QA. I decided the approaches, reviewed the output, caught the bugs. The machines did the tedious execution — and a lot of it without much prompting. I gave Codex a direction like "use SQLite" or "extract egg data from my receipts" and it figured out that with thousands of receipts it needed parallel workers, sharding, checkpoint-based resumption, and retry logic. I deliberately didn't overspecify. How far could the agents get on their own? Pretty far, it turns out — Codex ran a single continuous session for 12 days, spawning 11,729 automated pipeline runs on its own.</p>
+
+<p>There's something genuinely surreal about realizing a 25-year dream and not having to type in a single data point to get there. The "30 years of eggs" post is already in planning.</p>
+
+<h2>How It Was Made</h2>
+
+<p>The project spanned 12 days of wall clock time, but log analysis shows about 10-14 hours of actual hands-on time — short bursts of direction-giving separated by long stretches of autonomous AI execution. The median gap between my messages during active periods was 24 seconds. Then I'd walk away for hours while the pipeline ran.</p>
+
+<img src="assets/eggs/eggs-pipeline.svg" alt="Receipt processing pipeline diagram" style="width:100%;margin:1.5em 0">
+
+<h3>The Scanner Problem</h3>
+
+<p>The oldest receipts were on a flatbed scanner — multiple receipts per scan, random orientations, white paper on a white scanner bed. This was a significant barrier. The later receipts were scanned individually on a ScanSnap and were much cleaner, but those early flatbed scans needed real work.</p>
+
+<p>Codex CLI and I tried seven classical CV approaches to find receipt boundaries — edge detection, adaptive thresholding, contour analysis, morphological operations, watershed segmentation, template matching, and a grid-based decomposition I pitched as "a classic HackerRank problem." The core issue: receipts are white and so is the scanner bed. I started calling it the "shades of white" problem. The cleverest attempt was inspired by removing tourists from landmark photos — stack all scans, compute the median pixel at each position, subtract to reveal edges. Best F1: 0.302.</p>
+
+<p>We also tested macOS Vision OCR (via a Swift script Codex wrote on the fly), Tesseract, and several other tools. None of the classical approaches generalized. But the work wasn't wasted — the Flask review app and evaluation workflow carried forward into later stages, and honestly, it was worth doing just to feel the gap between old-school CV and what came next.</p>
+
+<p>What came next: Meta's SAM3. One API call with <code>text="receipt"</code> found every boundary with 0.92-0.98 confidence. Piloted on 25 scans, ran the full set, got 2,163 receipt boxes at about 4 seconds per scan. The contrast with hours of hand-tuned thresholding was visceral. You can read about foundation models being better. Running them back-to-back on the same problem makes it real.</p>
+
+<p>Then orientation detection — receipts land at random angles, and OCR needs them upright. I tested five methods, from local VLMs to Tesseract to various Claude models. The winning moment was realizing that Claude was already correctly identifying rotation every time I showed it a receipt during our conversation. Wait — you already know the answer. Why can't we just use you? So we did. Claude Sonnet's vision, directly, on all 2,163 receipts.</p>
+
+<h3>The Pipeline</h3>
+
+<p>Once every receipt was individualized and oriented, they all went through the same extraction pipeline — the flatbed crops, the ScanSnap scans, the PDFs, the email receipts. Thousands of images and documents, 2002 through 2026.</p>
+
+<p>It started with heuristic text parsing — regex for money amounts, keyword matching for egg mentions. The models love regex, for whatever reason. But heuristics only get you so far with messy real-world data, and when I said "we have unlimited tokens, it's no big deal," we pivoted to just sending everything to a vision model for structured extraction.</p>
+
+<p>Codex ran a continuous 12-day session, building the pipeline as it went. It self-designed a parallel worker architecture, split receipts into shards, managed worker health, merged outputs, and handled retries — all from fairly minimal direction on my part. When Claude CLI login failed mid-run, the system auto-disabled Claude and continued with Codex only. I didn't ask it to do that.</p>
+
+<h3>What the Pipeline Found</h3>
+
+<table>
+<tr><th>Year</th><th>Receipts</th><th>Egg Receipts</th><th>Egg Spend</th><th>Avg $/doz</th></tr>
+<tr><td>2002</td><td>172</td><td>6</td><td>$3.71</td><td>$0.73</td></tr>
+<tr><td>2003</td><td>300</td><td>20</td><td>$20.20</td><td>$1.01</td></tr>
+<tr><td>2004</td><td>280</td><td>17</td><td>$21.17</td><td>$1.11</td></tr>
+<tr><td>2005</td><td>310</td><td>13</td><td>$17.25</td><td>$1.09</td></tr>
+<tr><td>2006</td><td>400</td><td>13</td><td>$21.50</td><td>$1.65</td></tr>
+<tr><td>2007</td><td>402</td><td>7</td><td>$12.34</td><td>$1.76</td></tr>
+<tr><td>2008</td><td>258</td><td>2</td><td>$3.98</td><td>$1.99</td></tr>
+<tr><td>2009</td><td>239</td><td>7</td><td>$13.78</td><td>$2.07</td></tr>
+<tr><td>2010</td><td>359</td><td>22</td><td>$45.06</td><td>$2.05</td></tr>
+<tr><td>2011</td><td>213</td><td>11</td><td>$19.59</td><td>$1.87</td></tr>
+<tr><td>2012</td><td>80</td><td>5</td><td>$8.15</td><td>$1.63</td></tr>
+<tr><td>2013</td><td>520</td><td>24</td><td>$49.45</td><td>$2.06</td></tr>
+<tr><td>2014</td><td>473</td><td>41</td><td>$145.39</td><td>$3.50</td></tr>
+<tr><td>2015</td><td>1,129</td><td>34</td><td>$116.70</td><td>$3.15</td></tr>
+<tr><td>2016</td><td>560</td><td>11</td><td>$35.98</td><td>$2.77</td></tr>
+<tr><td>2017</td><td>681</td><td>9</td><td>$22.52</td><td>$2.50</td></tr>
+<tr><td>2018</td><td>820</td><td>39</td><td>$90.97</td><td>$2.12</td></tr>
+<tr><td>2019</td><td>889</td><td>52</td><td>$117.81</td><td>$1.96</td></tr>
+<tr><td>2020</td><td>503</td><td>21</td><td>$119.20</td><td>$2.21</td></tr>
+<tr><td>2021</td><td>494</td><td>44</td><td>$223.04</td><td>$3.98</td></tr>
+<tr><td>2022</td><td>513</td><td>29</td><td>$127.78</td><td>$3.76</td></tr>
+<tr><td>2023</td><td>461</td><td>39</td><td>$233.67</td><td>$4.16</td></tr>
+<tr><td>2024</td><td>352</td><td>23</td><td>$178.58</td><td>$3.50</td></tr>
+<tr><td>2025</td><td>469</td><td>12</td><td>$75.19</td><td>$5.78</td></tr>
+<tr><td>2026</td><td>46</td><td>2</td><td>$11.28</td><td>$5.64</td></tr>
+</table>
+
+<p>Some things that jump out:</p>
+
+<ul>
+<li><strong>2002 WinCo at $0.58/dozen</strong> — eggs were genuinely this cheap in rural Idaho, though OCR might have dropped a digit. WinCo's bulk pricing held under $1/dozen through 2005.</li>
+<li><strong>2008 has only 2 egg receipts</strong> — I was between scanners and barely archiving. The dip in 2012 (80 total receipts) is the same problem.</li>
+<li><strong>2014 spike to $3.50/dozen</strong> — first avian flu crisis. Prices didn't fully recover until 2019.</li>
+<li><strong>2021-2023 sustained highs</strong> — second avian flu wave plus COVID supply chain. $4.16/dozen average in 2023.</li>
+<li><strong>2025 at $5.78/dozen</strong> — the current crisis peak. The cheapest eggs I found were $2.99.</li>
+<li><strong>Trader Joe's accounts for 51% of all egg purchases</strong> (256 receipts). WinCo dominated the college years, Whole Foods entered in 2021.</li>
+<li><strong>Biggest single purchase</strong>: $36.59 at Chef'Store for 15 dozen (180 eggs). Party.</li>
+<li><strong>An $8.29/dozen receipt from Foodland</strong> — that one's from Hawaii.</li>
+</ul>
+
+<p>Not all the data is clean. 170 of 503 egg receipts had quantities inferred from price and time-period averages rather than explicitly parsed. A few receipts have date-parsing errors (one receipt thinks it's from 1985). The per-egg cost outliers usually trace back to quantity inference problems — a $15.54/dozen "outlier" in 2023 is almost certainly a normal dozen that got classified as 2 eggs.</p>
+
+<h3>The Messiness</h3>
+
+<p>Real-world data is relentlessly messy:</p>
+
+<ul>
+<li>Receipt folder typos spanning years: "Reciepts" (2016-2017) and "Recipts"</li>
+<li>A family photo filed under "Receipts"</li>
+<li>A receipt scanned backwards — Claude decoded the mirrored OCR character by character</li>
+<li>Email receipts silently preferring <code>text/plain</code> over <code>text/html</code>, dropping the pricing lines that only existed in the HTML part</li>
+<li>42,000 rate limit hits from the automated pipeline grinding against the API</li>
+</ul>
+
+<h3>Human in the Loop</h3>
+
+<p>The AI built the pipeline. Manual review remained essential at every quality gate.</p>
+
+<p>I spotted a store address hiding in OCR noise: "915 Ny 45th St" was 915 NW 45th St, Seattle. The AI had the text but didn't recognize it as a fixable artifact. That led to a Claude recovery pass on 40 missing-location egg receipts — all 40 resolved.</p>
+
+<p>The biggest catch: I manually reviewed 18 receipts and found "WILCOX FARM Omega 3 Large Grade AA Brown Eggs, 18 CT Qty: 1 @ $9.99 each $7.98" sitting right there in the data. "You couldn't figure that out?" This exposed a fundamental bug — the email parser was preferring <code>text/plain</code> over the richer <code>text/html</code> that contained the actual pricing. Nine missing egg prices recovered in one fix.</p>
+
+<p>I also repeatedly simplified over-engineered proposals. "I don't know why we need to hash the store id, we can just use it." And "I would have expected we start a new process per batch" — which turned out to be the fix for hours of process instability.</p>
+
+<h3>The Numbers</h3>
+
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td><strong>Wall clock time</strong></td><td>12 days (Feb 8-20, 2026)</td></tr>
+<tr><td><strong>Hands-on time</strong></td><td>~10-14 hours</td></tr>
+<tr><td><strong>Automated pipeline runs</strong></td><td>11,729</td></tr>
+<tr><td><strong>Tokens consumed</strong></td><td>~409 million</td></tr>
+<tr><td><strong>Estimated API cost</strong></td><td>~$506</td></tr>
+<tr><td><strong>Confirmed egg receipts</strong></td><td>503</td></tr>
+<tr><td><strong>Total egg spend captured</strong></td><td>~$1,734</td></tr>
+<tr><td><strong>Rate limit hits</strong></td><td>42,000</td></tr>
+</table>
+
+<p>The project log itself is part of the project — Claude Opus narrating what Codex built, from logs generated by both systems. The narrative was written by 6 parallel Sonnet subagents, each reading pre-condensed transcripts. AI parallelism writing about AI parallelism.</p>
+
+<p>The visualizations are vanilla JavaScript — no libraries, just Canvas and SVG. Code is <a href="https://github.com/john-b-rush/john-b-rush.github.io">on GitHub</a>.</p>
+
+<script src="assets/eggs/eggs-data.js?v=11"></script>
+<script src="assets/eggs/eggs-chart.js?v=11"></script>
+<script src="assets/eggs/eggs-map.js?v=11"></script>
+<script src="assets/eggs/eggs-counter.js?v=11"></script>
+<script src="assets/eggs/eggs-heatmap.js?v=11"></script>
+</body>
+</html>

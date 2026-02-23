@@ -1,4 +1,5 @@
 // Viz 2: Interactive PNW Map — SVG with time scrubber, animated markers, dynamic camera
+// + Travel detours: zooms out to show Hawaii, California, Louisiana, etc.
 (function () {
   var container = document.getElementById("egg-map");
   if (!container || !window.EGG_DATA) return;
@@ -22,7 +23,7 @@
     return ((latMax - lat) / (latMax - latMin)) * mapH;
   }
 
-  // --- City centers ---
+  // --- City centers (PNW) ---
   var cities = {
     moscow: {
       lat: 46.7324, lng: -117.0002, label: "Moscow",
@@ -38,7 +39,11 @@
     },
   };
 
-  // --- Hardcoded camera viewBoxes (all keep Moscow in frame) ---
+  // Travel dot color (gold)
+  var travelColor = "#d29922";
+  var travelColorDim = "#6b4e11";
+
+  // --- Camera viewBoxes ---
   var moscowPx = { x: projX(-117.0), y: projY(46.73) };
   var portlandPx = { x: projX(-122.68), y: projY(45.52) };
   var seattlePx = { x: projX(-122.33), y: projY(47.61) };
@@ -46,14 +51,14 @@
   var cameras = {
     moscow: (function () {
       var cx = moscowPx.x, cy = moscowPx.y;
-      var vw = 200, vh = vw * (mapH / mapW);
+      var vw = 220, vh = vw * (mapH / mapW);
       return { x: cx - vw / 2, y: cy - vh / 2, w: vw, h: vh };
     })(),
     moscowPortland: (function () {
-      var minX = Math.min(moscowPx.x, portlandPx.x) - 40;
-      var maxX = Math.max(moscowPx.x, portlandPx.x) + 40;
-      var minY = Math.min(moscowPx.y, portlandPx.y) - 30;
-      var maxY = Math.max(moscowPx.y, portlandPx.y) + 30;
+      var minX = Math.min(moscowPx.x, portlandPx.x) - 65;
+      var maxX = Math.max(moscowPx.x, portlandPx.x) + 55;
+      var minY = Math.min(moscowPx.y, portlandPx.y) - 42;
+      var maxY = Math.max(moscowPx.y, portlandPx.y) + 42;
       var vw = maxX - minX;
       var vh = maxY - minY;
       var aspect = mapW / mapH;
@@ -63,10 +68,10 @@
       return { x: cx - vw / 2, y: cy - vh / 2, w: vw, h: vh };
     })(),
     all: (function () {
-      var minX = Math.min(moscowPx.x, portlandPx.x, seattlePx.x) - 50;
-      var maxX = Math.max(moscowPx.x, portlandPx.x, seattlePx.x) + 50;
-      var minY = Math.min(moscowPx.y, portlandPx.y, seattlePx.y) - 35;
-      var maxY = Math.max(moscowPx.y, portlandPx.y, seattlePx.y) + 35;
+      var minX = Math.min(moscowPx.x, portlandPx.x, seattlePx.x) - 78;
+      var maxX = Math.max(moscowPx.x, portlandPx.x, seattlePx.x) + 62;
+      var minY = Math.min(moscowPx.y, portlandPx.y, seattlePx.y) - 48;
+      var maxY = Math.max(moscowPx.y, portlandPx.y, seattlePx.y) + 48;
       var vw = maxX - minX;
       var vh = maxY - minY;
       var aspect = mapW / mapH;
@@ -77,7 +82,41 @@
     })(),
   };
 
-  // --- Real state outlines (from PublicaMundi simplified GeoJSON) ---
+  // --- Travel detection ---
+  function isTravel(d) {
+    var x = projX(d.lng), y = projY(d.lat);
+    return x < -100 || x > mapW + 100 || y < -100 || y > mapH + 100;
+  }
+
+  function travelRegion(d) {
+    if (d.lat < 25) return "Hawaii";
+    if (d.lat < 32 && d.lng > -95) return "Louisiana";
+    if (d.lat > 31 && d.lat < 36 && d.lng > -114 && d.lng < -109) return "Arizona";
+    if (d.lat > 39 && d.lat < 42 && d.lng > -113 && d.lng < -109) return "Utah";
+    return "California";
+  }
+
+  // Pre-compute which data indices trigger camera detours
+  // Only the first purchase of each "trip" triggers a detour
+  var detourTriggers = {};
+  (function () {
+    var lastRegion = null, lastIdx = -100;
+    for (var i = 0; i < data.length; i++) {
+      if (!isTravel(data[i])) continue;
+      var region = travelRegion(data[i]);
+      // Skip if same region and close to last detour (same trip)
+      if (region === lastRegion && i - lastIdx < 10) continue;
+      detourTriggers[i] = {
+        x: projX(data[i].lng),
+        y: projY(data[i].lat),
+        region: region,
+      };
+      lastRegion = region;
+      lastIdx = i;
+    }
+  })();
+
+  // --- Geography: state outlines ---
   var states = {
     washington: [
       [-117.033,49.000],[-117.044,47.762],[-117.039,46.426],[-117.055,46.344],
@@ -148,12 +187,55 @@
     ],
   };
 
+  // --- Simplified US mainland outline (for context during travel detours) ---
+  var usMainland = [
+    [-124.7,48.4],[-124.2,42.0],[-124.0,40.4],[-123.8,39.0],
+    [-122.5,37.8],[-122.0,36.6],[-120.6,34.8],[-118.5,34.0],[-117.2,32.7],
+    [-114.6,32.5],[-111.0,31.3],[-108.2,31.8],[-106.5,31.8],
+    [-104.0,30.0],[-103.0,29.0],[-99.0,26.5],[-97.2,25.9],
+    [-97.0,28.0],[-95.0,29.5],[-93.5,29.8],[-90.0,29.0],
+    [-88.8,30.2],[-87.5,30.3],[-85.8,30.0],[-84.0,29.0],
+    [-82.5,27.5],[-81.8,24.6],[-80.2,25.2],[-80.1,27.0],[-80.6,28.5],
+    [-81.4,31.0],[-79.0,33.5],[-77.0,34.7],[-75.5,35.3],
+    [-75.5,37.0],[-74.0,38.5],[-73.7,40.7],[-71.0,41.5],
+    [-70.0,42.0],[-70.8,43.2],[-67.0,44.5],[-67.0,47.0],
+    [-69.5,47.2],[-71.5,45.0],[-75.0,45.0],[-76.5,43.5],
+    [-79.0,43.0],[-83.0,42.0],[-82.5,43.0],[-84.5,46.0],
+    [-88.0,46.5],[-90.0,47.5],[-92.0,48.5],[-95.2,49.0],
+    [-104.0,49.0],[-117.0,49.0],[-124.7,48.4],
+  ];
+
+  // --- Hawaii islands (simplified outlines) ---
+  var hawaiiIslands = [
+    // Kauai
+    [[-159.8,22.22],[-159.3,22.24],[-159.15,22.05],[-159.3,21.87],
+     [-159.65,21.87],[-159.8,22.05],[-159.8,22.22]],
+    // Oahu
+    [[-158.28,21.58],[-157.7,21.58],[-157.65,21.3],[-158.1,21.25],
+     [-158.28,21.42],[-158.28,21.58]],
+    // Maui
+    [[-156.7,20.95],[-156.15,20.93],[-156.0,20.7],[-156.4,20.58],
+     [-156.7,20.72],[-156.7,20.95]],
+    // Big Island
+    [[-156.05,20.2],[-155.0,20.0],[-154.8,19.5],[-155.6,18.9],
+     [-156.05,19.75],[-156.05,20.2]],
+  ];
+
+  // --- Path helpers ---
   function statePath(pts) {
     var d = "M";
     for (var i = 0; i < pts.length; i++) {
       d += (i > 0 ? "L" : "") + projX(pts[i][0]).toFixed(1) + "," + projY(pts[i][1]).toFixed(1);
     }
     return d + "Z";
+  }
+
+  function linePath(pts) {
+    var d = "M";
+    for (var i = 0; i < pts.length; i++) {
+      d += (i > 0 ? "L" : "") + projX(pts[i][0]).toFixed(1) + "," + projY(pts[i][1]).toFixed(1);
+    }
+    return d;
   }
 
   // --- Waterways ---
@@ -166,15 +248,7 @@
     [-122.50, 47.9], [-122.60, 48.1],
   ];
 
-  function linePath(pts) {
-    var d = "M";
-    for (var i = 0; i < pts.length; i++) {
-      d += (i > 0 ? "L" : "") + projX(pts[i][0]).toFixed(1) + "," + projY(pts[i][1]).toFixed(1);
-    }
-    return d;
-  }
-
-  // --- Color interpolation for time gradient ---
+  // --- Color interpolation ---
   function hexToRgb(hex) {
     var r = parseInt(hex.slice(1, 3), 16);
     var g = parseInt(hex.slice(3, 5), 16);
@@ -201,16 +275,34 @@
   svgEl.setAttribute("viewBox", "0 0 " + mapW + " " + mapH);
   svgEl.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
-  // Background (oversized)
+  // Background — oversized to cover zoomed-out views (Hawaii, Louisiana)
   var bg = document.createElementNS(ns, "rect");
-  bg.setAttribute("x", -200);
-  bg.setAttribute("y", -200);
-  bg.setAttribute("width", mapW + 400);
-  bg.setAttribute("height", mapH + 400);
+  bg.setAttribute("x", -3000);
+  bg.setAttribute("y", -2000);
+  bg.setAttribute("width", 7000);
+  bg.setAttribute("height", 5000);
   bg.setAttribute("fill", "#0a0e14");
   svgEl.appendChild(bg);
 
-  // Context state
+  // --- US mainland outline (very dim, behind everything) ---
+  var usPath = document.createElementNS(ns, "path");
+  usPath.setAttribute("d", statePath(usMainland));
+  usPath.setAttribute("fill", "#0d1117");
+  usPath.setAttribute("stroke", "#161b22");
+  usPath.setAttribute("stroke-width", "0.8");
+  svgEl.appendChild(usPath);
+
+  // --- Hawaii islands (very dim) ---
+  for (var hi = 0; hi < hawaiiIslands.length; hi++) {
+    var island = document.createElementNS(ns, "path");
+    island.setAttribute("d", statePath(hawaiiIslands[hi]));
+    island.setAttribute("fill", "#0d1117");
+    island.setAttribute("stroke", "#161b22");
+    island.setAttribute("stroke-width", "0.6");
+    svgEl.appendChild(island);
+  }
+
+  // --- Context state (Montana) ---
   if (states.montana) {
     var p = document.createElementNS(ns, "path");
     p.setAttribute("d", statePath(states.montana));
@@ -220,7 +312,7 @@
     svgEl.appendChild(p);
   }
 
-  // Main states
+  // --- Main PNW states ---
   var mainStateKeys = ["idaho", "oregon", "washington"];
   for (var s = 0; s < mainStateKeys.length; s++) {
     var p = document.createElementNS(ns, "path");
@@ -231,7 +323,7 @@
     svgEl.appendChild(p);
   }
 
-  // Waterways
+  // --- Waterways ---
   var river = document.createElementNS(ns, "path");
   river.setAttribute("d", linePath(columbiaRiver));
   river.setAttribute("fill", "none");
@@ -252,7 +344,17 @@
   sound.setAttribute("opacity", "0.5");
   svgEl.appendChild(sound);
 
-  // City labels — hidden until first purchase
+  // --- Flight path arc (for travel detours, initially hidden) ---
+  var flightPath = document.createElementNS(ns, "path");
+  flightPath.setAttribute("fill", "none");
+  flightPath.setAttribute("stroke", travelColor);
+  flightPath.setAttribute("stroke-width", "1.5");
+  flightPath.setAttribute("stroke-dasharray", "8,4");
+  flightPath.setAttribute("opacity", "0");
+  flightPath.setAttribute("stroke-linecap", "round");
+  svgEl.appendChild(flightPath);
+
+  // --- City labels — hidden until first purchase ---
   var cityLabelEls = {};
   var cityKeys = ["moscow", "portland", "seattle"];
   for (var c = 0; c < cityKeys.length; c++) {
@@ -272,7 +374,7 @@
     cityLabelEls[cityKeys[c]] = lbl;
   }
 
-  // Year overlay — top-right corner, out of the way
+  // --- Year overlay ---
   var yearOverlay = document.createElementNS(ns, "text");
   yearOverlay.setAttribute("text-anchor", "end");
   yearOverlay.setAttribute("font-size", "28");
@@ -283,7 +385,7 @@
   yearOverlay.textContent = data[0].date.slice(0, 4);
   svgEl.appendChild(yearOverlay);
 
-  // Store name flash — appears near the latest purchase then fades
+  // --- Store name flash ---
   var storeFlash = document.createElementNS(ns, "text");
   storeFlash.setAttribute("font-size", "8");
   storeFlash.setAttribute("fill", "#e6edf3");
@@ -306,6 +408,15 @@
       storeFlash.setAttribute("opacity", "0");
     }, 600);
   }
+
+  // --- Detour label (appears during travel detours) ---
+  var detourLabel = document.createElementNS(ns, "text");
+  detourLabel.setAttribute("fill", travelColor);
+  detourLabel.setAttribute("font-weight", "600");
+  detourLabel.setAttribute("font-family", "-apple-system, BlinkMacSystemFont, sans-serif");
+  detourLabel.setAttribute("opacity", "0");
+  detourLabel.setAttribute("pointer-events", "none");
+  svgEl.appendChild(detourLabel);
 
   // Markers group
   var markersGroup = document.createElementNS(ns, "g");
@@ -352,18 +463,19 @@
   var playing = false;
   var speed = 2;
   var speeds = [0.5, 1, 2, 5, 10];
-  var speedIndex = 2; // start at 2x
+  var speedIndex = 2;
   var lastFrameTime = 0;
   var frameInterval = 120;
   var markers = [];
   var revealedCities = {};
 
-  // --- Camera ---
+  // --- Camera state ---
   var cameraStage = "moscow";
 
   function getCameraKey(upToIdx) {
     var hasPortland = false, hasSeattle = false;
     for (var i = 0; i <= upToIdx; i++) {
+      if (isTravel(data[i])) continue; // skip travel points for PNW camera
       var lat = data[i].lat;
       if (lat > 47) hasSeattle = true;
       else if (lat < 46) hasPortland = true;
@@ -378,7 +490,7 @@
   var cameraAnimating = false;
   var cameraStartTime = null;
   var cameraFrom = null;
-  var cameraDuration = 1500;
+  var cameraDuration = 1200;
 
   function setViewBox(vb) {
     svgEl.setAttribute(
@@ -401,7 +513,7 @@
   }
 
   function animateCamera(now) {
-    if (!cameraAnimating) return;
+    if (!cameraAnimating || detourState !== "normal") return;
     if (!cameraStartTime) cameraStartTime = now;
     var elapsed = now - cameraStartTime;
     var t = Math.min(elapsed / cameraDuration, 1);
@@ -412,6 +524,8 @@
       requestAnimationFrame(animateCamera);
     } else {
       cameraAnimating = false;
+      // Reset playback timing so dots don't jump after pause
+      lastFrameTime = 0;
     }
   }
 
@@ -436,7 +550,6 @@
   }
 
   function updateYearPosition() {
-    // Pin year to top-right of current viewBox
     yearOverlay.setAttribute("x", (currentVB.x + currentVB.w - currentVB.w * 0.03).toFixed(1));
     yearOverlay.setAttribute("y", (currentVB.y + currentVB.w * 0.08).toFixed(1));
     yearOverlay.setAttribute("font-size", Math.round(currentVB.w * 0.07));
@@ -445,11 +558,184 @@
   setViewBox(currentVB);
   updateYearPosition();
 
+  // === DETOUR CAMERA STATE MACHINE ===
+  var detourState = "normal"; // normal | out | hold | back
+  var detourStartTime = null;
+  var detourFrom = null;
+  var detourTarget = null;
+  var detourReturn = null;
+  var detourInfo = null;
+
+  var DETOUR_OUT_MS = 1200;
+  var DETOUR_HOLD_MS = 1800;
+  var DETOUR_BACK_MS = 1000;
+
+  function calcDetourVB(dx, dy) {
+    var pad = 150;
+    var minX = Math.min(-20, dx) - pad;
+    var maxX = Math.max(mapW + 20, dx) + pad;
+    var minY = Math.min(-20, dy) - pad;
+    var maxY = Math.max(mapH + 20, dy) + pad;
+    var vw = maxX - minX, vh = maxY - minY;
+    var aspect = mapW / mapH;
+    if (vw / vh > aspect) vh = vw / aspect;
+    else vw = vh * aspect;
+    var cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    return { x: cx - vw / 2, y: cy - vh / 2, w: vw, h: vh };
+  }
+
+  // Flight arc geometry — stored for progressive draw animation
+  var flightArc = { p0x: 0, p0y: 0, cpx: 0, cpy: 0, p2x: 0, p2y: 0 };
+
+  function calcFlightArc(fromX, fromY, toX, toY) {
+    var midX = (fromX + toX) / 2;
+    var dx = toX - fromX, dy = toY - fromY;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    var cpY = Math.min(fromY, toY) - Math.sqrt(dist) * 3;
+    flightArc.p0x = fromX; flightArc.p0y = fromY;
+    flightArc.cpx = midX;  flightArc.cpy = cpY;
+    flightArc.p2x = toX;   flightArc.p2y = toY;
+  }
+
+  // Draw a quadratic bezier from parameter 0 to t (De Casteljau subdivision)
+  function partialBezierPath(p0x, p0y, cpx, cpy, p2x, p2y, t) {
+    if (t <= 0.001) return "M" + p0x.toFixed(0) + "," + p0y.toFixed(0);
+    var cp1x = p0x + t * (cpx - p0x);
+    var cp1y = p0y + t * (cpy - p0y);
+    var endx = (1 - t) * (1 - t) * p0x + 2 * (1 - t) * t * cpx + t * t * p2x;
+    var endy = (1 - t) * (1 - t) * p0y + 2 * (1 - t) * t * cpy + t * t * p2y;
+    return "M" + p0x.toFixed(0) + "," + p0y.toFixed(0) +
+           " Q" + cp1x.toFixed(0) + "," + cp1y.toFixed(0) +
+           " " + endx.toFixed(0) + "," + endy.toFixed(0);
+  }
+
+  function showDetourVisuals(trigger) {
+    // Compute flight arc geometry (Seattle → destination)
+    var fromX = seattlePx.x, fromY = seattlePx.y;
+    calcFlightArc(fromX, fromY, trigger.x, trigger.y);
+
+    // Scale stroke-width and dash to viewBox
+    var dvb = calcDetourVB(trigger.x, trigger.y);
+    flightPath.setAttribute("stroke-width", (dvb.w * 0.002).toFixed(1));
+    var dash = Math.round(dvb.w * 0.01);
+    flightPath.setAttribute("stroke-dasharray", dash + "," + Math.round(dash * 0.5));
+
+    // Start with invisible point — animation will draw it progressively
+    flightPath.setAttribute("d", partialBezierPath(
+      flightArc.p0x, flightArc.p0y, flightArc.cpx, flightArc.cpy,
+      flightArc.p2x, flightArc.p2y, 0));
+    flightPath.setAttribute("opacity", "0.5");
+
+    // Label near destination
+    var fontSize = Math.round(Math.max(15, Math.min(50, dvb.w * 0.022)));
+    detourLabel.setAttribute("font-size", fontSize);
+    detourLabel.setAttribute("x", (trigger.x + fontSize * 0.8).toFixed(1));
+    detourLabel.setAttribute("y", (trigger.y - fontSize * 0.5).toFixed(1));
+    detourLabel.textContent = trigger.region;
+    detourLabel.setAttribute("opacity", "0");
+  }
+
+  function hideDetourVisuals() {
+    flightPath.setAttribute("opacity", "0");
+    detourLabel.setAttribute("opacity", "0");
+  }
+
+  function startDetour(trigger) {
+    // Cancel any normal camera animation
+    cameraAnimating = false;
+    detourState = "out";
+    detourStartTime = performance.now();
+    detourFrom = { x: currentVB.x, y: currentVB.y, w: currentVB.w, h: currentVB.h };
+    detourReturn = { x: currentVB.x, y: currentVB.y, w: currentVB.w, h: currentVB.h };
+    detourTarget = calcDetourVB(trigger.x, trigger.y);
+    detourInfo = trigger;
+
+    showDetourVisuals(trigger);
+    requestAnimationFrame(animateDetour);
+  }
+
+  function animateDetour(now) {
+    if (detourState === "normal") return;
+    var elapsed = now - detourStartTime;
+
+    if (detourState === "out") {
+      var t = Math.min(elapsed / DETOUR_OUT_MS, 1);
+      currentVB = lerpVB(detourFrom, detourTarget, easeInOutCubic(t));
+      setViewBox(currentVB);
+      updateYearPosition();
+      // Draw outbound line progressively: Seattle → destination
+      var drawT = easeInOutCubic(t);
+      flightPath.setAttribute("d", partialBezierPath(
+        flightArc.p0x, flightArc.p0y, flightArc.cpx, flightArc.cpy,
+        flightArc.p2x, flightArc.p2y, drawT));
+      flightPath.setAttribute("opacity", "0.5");
+      // Fade label in during last 40% of zoom-out
+      if (t > 0.6) {
+        detourLabel.setAttribute("opacity", ((t - 0.6) / 0.4 * 0.9).toFixed(2));
+      }
+      if (t >= 1) {
+        detourState = "hold";
+        detourStartTime = now;
+        detourLabel.setAttribute("opacity", "0.9");
+        // Arc has arrived — hide it. Return trip will draw fresh.
+        flightPath.setAttribute("opacity", "0");
+      }
+    } else if (detourState === "hold") {
+      var holdTime = Math.max(DETOUR_HOLD_MS / Math.max(speed, 1), 400);
+      if (elapsed >= holdTime) {
+        detourState = "back";
+        detourStartTime = now;
+        detourFrom = { x: currentVB.x, y: currentVB.y, w: currentVB.w, h: currentVB.h };
+        // Return to appropriate PNW camera
+        var returnStage = getCameraKey(currentIdx);
+        cameraStage = returnStage;
+        detourReturn = cameras[returnStage];
+        // Hide label and outbound line — return line will draw fresh
+        detourLabel.setAttribute("opacity", "0");
+        flightPath.setAttribute("opacity", "0");
+      }
+    } else if (detourState === "back") {
+      var t = Math.min(elapsed / DETOUR_BACK_MS, 1);
+      currentVB = lerpVB(detourFrom, detourReturn, easeInOutCubic(t));
+      setViewBox(currentVB);
+      updateYearPosition();
+      // Draw return line progressively: destination → Seattle (reversed)
+      var drawT = easeInOutCubic(t);
+      flightPath.setAttribute("d", partialBezierPath(
+        flightArc.p2x, flightArc.p2y, flightArc.cpx, flightArc.cpy,
+        flightArc.p0x, flightArc.p0y, drawT));
+      // Visible during draw, fade out in last 25%
+      var pathOpacity = t < 0.75 ? 0.5 : 0.5 * (1 - (t - 0.75) / 0.25);
+      flightPath.setAttribute("opacity", pathOpacity.toFixed(2));
+      if (t >= 1) {
+        detourState = "normal";
+        hideDetourVisuals();
+        // Resume playback timing
+        lastFrameTime = now;
+      }
+    }
+
+    if (detourState !== "normal") {
+      requestAnimationFrame(animateDetour);
+    }
+  }
+
   // --- Marker management ---
   function cityForPoint(d) {
+    if (isTravel(d)) return "travel";
     if (d.lat > 47) return "seattle";
     if (d.lat < 46) return "portland";
     return "moscow";
+  }
+
+  function getMarkerColor(city) {
+    if (city === "travel") return travelColor;
+    return cities[city].color;
+  }
+
+  function getMarkerColorDim(city) {
+    if (city === "travel") return travelColorDim;
+    return cities[city].colorDim;
   }
 
   function addMarker(idx) {
@@ -457,10 +743,10 @@
     var cx = projX(d.lng);
     var cy = projY(d.lat);
     var city = cityForPoint(d);
-    var color = cities[city].color;
+    var color = getMarkerColor(city);
 
-    // Reveal city label on first purchase
-    if (!revealedCities[city]) {
+    // Reveal city label on first PNW purchase
+    if (city !== "travel" && !revealedCities[city]) {
       revealedCities[city] = true;
       cityLabelEls[city].setAttribute("opacity", "1");
     }
@@ -468,7 +754,7 @@
     var circle = document.createElementNS(ns, "circle");
     circle.setAttribute("cx", cx.toFixed(1));
     circle.setAttribute("cy", cy.toFixed(1));
-    circle.setAttribute("r", "3.5");
+    circle.setAttribute("r", city === "travel" ? "5" : "3.5");
     circle.setAttribute("fill", color);
     circle.setAttribute("opacity", "0");
     circle.setAttribute("data-idx", idx);
@@ -486,19 +772,19 @@
   }
 
   function updateMarkerAppearance(currentIdx) {
-    // Stronger fade: recent markers bright, old ones dim but never invisible
     var fadeWindow = 50;
     for (var i = 0; i < markers.length; i++) {
       var m = markers[i];
       var age = currentIdx - m.idx;
-      var t = Math.min(age / fadeWindow, 1); // 0 = newest, 1 = oldest
+      var t = Math.min(age / fadeWindow, 1);
 
       // Color: lerp from bright to dim
-      var city = cities[m.city];
-      var color = lerpColor(city.color, city.colorDim, t);
+      var colorBright = getMarkerColor(m.city);
+      var colorDim = getMarkerColorDim(m.city);
+      var color = lerpColor(colorBright, colorDim, t);
       m.el.setAttribute("fill", color);
 
-      // Opacity: 1.0 for newest, 0.15 for oldest — never zero
+      // Opacity
       var opacity;
       if (age === 0) {
         opacity = 1.0;
@@ -510,7 +796,8 @@
       m.el.setAttribute("opacity", opacity.toFixed(2));
 
       // Newest marker gets larger radius
-      m.el.setAttribute("r", age === 0 ? "4.5" : "3");
+      var isTravel = m.city === "travel";
+      m.el.setAttribute("r", age === 0 ? (isTravel ? "6" : "4.5") : (isTravel ? "4" : "3"));
     }
 
     // Update year
@@ -576,6 +863,12 @@
   function playLoop(now) {
     if (!playing) return;
 
+    // During detour or PNW camera transition, keep the loop alive but don't advance data
+    if (detourState !== "normal" || cameraAnimating) {
+      requestAnimationFrame(playLoop);
+      return;
+    }
+
     if (!lastFrameTime) lastFrameTime = now;
     var delta = now - lastFrameTime;
     var interval = frameInterval / speed;
@@ -583,10 +876,26 @@
     if (delta >= interval) {
       lastFrameTime = now;
       if (currentIdx < data.length - 1) {
+        // Look ahead: if next point triggers a camera change, start pan first
+        var nextIdx = currentIdx + 1;
+        var nextCamKey = getCameraKey(nextIdx);
+        if (nextCamKey !== cameraStage && !isTravel(data[nextIdx])) {
+          // Start the camera transition before advancing
+          updateCamera(nextIdx);
+          // cameraAnimating is now true, so next frame will wait
+          requestAnimationFrame(playLoop);
+          return;
+        }
+
         currentIdx++;
         slider.value = currentIdx;
         dateLabel.textContent = data[currentIdx].date;
         showUpTo(currentIdx);
+
+        // Check for detour trigger
+        if (detourTriggers[currentIdx]) {
+          startDetour(detourTriggers[currentIdx]);
+        }
       } else {
         playing = false;
         playBtn.innerHTML = "&#9654;";
@@ -611,6 +920,9 @@
         cityKeys.forEach(function (k) { cityLabelEls[k].setAttribute("opacity", "0"); });
         slider.value = "0";
         jumpCamera("moscow");
+        // Reset detour state
+        detourState = "normal";
+        hideDetourVisuals();
       }
       lastFrameTime = 0;
       requestAnimationFrame(playLoop);
@@ -623,6 +935,11 @@
   slider.addEventListener("input", function () {
     currentIdx = parseInt(slider.value);
     dateLabel.textContent = data[currentIdx].date;
+    // During scrub, cancel any active detour and jump camera
+    if (detourState !== "normal") {
+      detourState = "normal";
+      hideDetourVisuals();
+    }
     var newStage = getCameraKey(currentIdx);
     if (newStage !== cameraStage) {
       jumpCamera(newStage);
