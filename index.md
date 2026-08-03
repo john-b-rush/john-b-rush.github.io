@@ -13,10 +13,11 @@ title: home
 
 ## Latest Post
 
-- [25 Years of Eggs](posts/eggs-25-years-20260219) - *February 23, 2026*
+- [A Nap, a Walk, and a USB Stick](posts/nap-walk-usb-stick-20260730) - *August 3, 2026*
 
 ## 2026
 
+- [25 Years of Eggs](posts/eggs-25-years-20260219) - *February 23, 2026*
 - [Compounding Beats Roadmaps](posts/compounding-beats-roadmaps-20260131) - *January 31, 2026*
 - [Agent-Streams: Skeptical Overseer for Long-Running Coding Agents](posts/agent-streams-20260101) - *January 1, 2026*
 
