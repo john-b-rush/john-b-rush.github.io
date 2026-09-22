@@ -1,6 +1,7 @@
 ---
 title: "Agent-Streams: Skeptical Overseer for Long-Running Coding Agents"
 description: "A builder/overseer loop for long-running coding agents: treat DONE as a claim, enforce skeptical review, and merge only after approval."
+date: 2026-01-01
 image: "/images/posts/agent-streams-header.jpg"
 ---
 

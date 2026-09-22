@@ -1,0 +1,32 @@
+---
+layout: null
+sitemap: false
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <link href="{{ page.url | absolute_url }}" rel="self" type="application/atom+xml" />
+  <link href="{{ '/' | absolute_url }}" rel="alternate" type="text/html" />
+  <id>{{ '/' | absolute_url | xml_escape }}</id>
+  <title type="html">{{ site.title | smartify | xml_escape }}</title>
+  <subtitle>{{ site.description | xml_escape }}</subtitle>
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  <author>
+    <name>{{ site.author | xml_escape }}</name>
+  </author>
+
+  {% assign posts = site.pages | where_exp: "page", "page.path contains 'posts/'" | where_exp: "page", "page.date" | sort: "date" | reverse %}
+  {% for post in posts limit: 20 %}
+    {% assign post_title = post.title | smartify | strip_html | normalize_whitespace | xml_escape %}
+    {% assign post_summary = post.description | default: post.excerpt | strip_html | normalize_whitespace | xml_escape %}
+    <entry>
+      <title type="html">{{ post_title }}</title>
+      <link href="{{ post.url | absolute_url }}" rel="alternate" type="text/html" title="{{ post_title }}" />
+      <id>{{ post.url | absolute_url | xml_escape }}</id>
+      <published>{{ post.date | date_to_xmlschema }}</published>
+      <updated>{{ post.date | date_to_xmlschema }}</updated>
+      <content type="html" xml:base="{{ post.url | absolute_url | xml_escape }}">{{ post.content | xml_escape }}</content>
+      {% if post_summary %}<summary type="html">{{ post_summary }}</summary>{% endif %}
+      <author><name>{{ site.author | xml_escape }}</name></author>
+    </entry>
+  {% endfor %}
+</feed>

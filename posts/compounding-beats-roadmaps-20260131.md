@@ -1,6 +1,7 @@
 ---
 title: "Compounding Beats Roadmaps"
 description: "For service-heavy SaaS, the durable advantage is turning customer execution into reusable organizational capability."
+date: 2026-01-31
 image: "/images/posts/compounding-beats-roadmaps-header.jpg"
 ---
 

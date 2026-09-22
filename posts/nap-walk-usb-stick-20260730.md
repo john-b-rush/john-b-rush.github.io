@@ -1,6 +1,7 @@
 ---
 title: "A Nap, a Walk, and a USB Stick"
 description: "Codex fixed my freezing Wi-Fi during a nap, then migrated my router from pfSense to OPNsense during a walk with my daughter"
+date: 2026-08-03
 image: "/images/posts/nap-walk-usb-stick-header.jpg"
 published: true
 ---

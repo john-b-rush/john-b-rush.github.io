@@ -1,6 +1,7 @@
 remote_theme: b2a3e8/jekyll-theme-console
 title: John Rush's Blog
 description: Tech blog about software development and other interesting topics
+author: John Rush
 url: "https://john-rush.com"
 header_pages:
   - index.md
@@ -21,4 +22,3 @@ defaults:
 plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
-
