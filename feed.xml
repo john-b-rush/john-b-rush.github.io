@@ -3,7 +3,7 @@ layout: null
 sitemap: false
 ---
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
   <link href="{{ page.url | absolute_url }}" rel="self" type="application/atom+xml" />
   <link href="{{ '/' | absolute_url }}" rel="alternate" type="text/html" />
   <id>{{ '/' | absolute_url | xml_escape }}</id>
@@ -26,6 +26,14 @@ sitemap: false
       <updated>{{ post.date | date_to_xmlschema }}</updated>
       <content type="html" xml:base="{{ post.url | absolute_url | xml_escape }}">{{ post.content | xml_escape }}</content>
       {% if post_summary %}<summary type="html">{{ post_summary }}</summary>{% endif %}
+      {% assign post_image = post.image.path | default: post.image %}
+      {% if post_image %}
+        {% unless post_image contains "://" %}
+          {% assign post_image = post_image | absolute_url %}
+        {% endunless %}
+        <media:thumbnail url="{{ post_image | xml_escape }}" />
+        <media:content medium="image" url="{{ post_image | xml_escape }}" />
+      {% endif %}
       <author><name>{{ site.author | xml_escape }}</name></author>
     </entry>
   {% endfor %}
