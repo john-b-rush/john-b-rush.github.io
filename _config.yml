@@ -9,6 +9,10 @@ header_pages:
 style: dark
 listen_for_clients_preferred_style: false
 
+exclude:
+  - AGENTS.md
+  - CLAUDE.md
+
 defaults:
   - scope:
       path: ""
@@ -22,3 +26,4 @@ defaults:
 plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
+  - jekyll-sitemap

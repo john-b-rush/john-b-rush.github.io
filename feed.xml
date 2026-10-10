@@ -24,7 +24,7 @@ sitemap: false
       <id>{{ post.url | absolute_url | xml_escape }}</id>
       <published>{{ post.date | date_to_xmlschema }}</published>
       <updated>{{ post.date | date_to_xmlschema }}</updated>
-      <content type="html" xml:base="{{ post.url | absolute_url | xml_escape }}">{{ post.content | xml_escape }}</content>
+      <content type="html" xml:base="{{ post.url | absolute_url | xml_escape }}">{{ post.content | markdownify | xml_escape }}</content>
       {% if post_summary %}<summary type="html">{{ post_summary }}</summary>{% endif %}
       {% assign post_image = post.image.path | default: post.image %}
       {% if post_image %}
