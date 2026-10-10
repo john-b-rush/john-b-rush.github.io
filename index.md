@@ -1,5 +1,5 @@
 ---
-title: home
+title: John Rush's Blog
 ---
 
 <img srcset="images/ElliottBay-300w.jpg 300w,
